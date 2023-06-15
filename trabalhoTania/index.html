@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inserir Matriz e Calcular</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#matrixForm').submit(function(e) {
+        e.preventDefault(); // Evita o envio do formulário
+      
+        var rows = parseInt($('#rows').val());
+        var cols = parseInt($('#cols').val());
+      
+        $('#matrixContainer').empty(); // Limpa o contêiner da matriz
+      
+        // Cria campos de entrada para a matriz
+        for (var i = 0; i < rows; i++) {
+          var row = $('<tr>');
+          for (var j = 0; j < cols; j++) {
+            var col = $('<td><input type="number"></td>');
+            row.append(col);
+          }
+          $('#matrixContainer').append(row);
+        }
+      });
+
+      $('#gaussButton').click(function() {
+        var matrix = [];
+        $('#matrixContainer input').each(function() {
+          matrix.push(parseFloat($(this).val()));
+        });
+
+        // Função de eliminação de Gauss
+        function eliminacaoGauss(matrix) {
+          var n = Math.floor(Math.sqrt(matrix.length));
+          var A = [];
+          var b = [];
+          var x = [];
+
+          // Construir a matriz A e o vetor b
+          for (var i = 0; i < n; i++) {
+            var row = [];
+            for (var j = 0; j < n; j++) {
+              row.push([matrix[i * n + j]]); // Modificação aqui
+            }
+            A.push(row);
+            b.push([matrix[n * n + i]]);
+          }
+
+          // Eliminação de Gauss
+          for (var k = 0; k < n - 1; k++) {
+            for (var i = k + 1; i < n; i++) {
+              var factor = A[i][k][0] / A[k][k][0]; // Modificação aqui
+              for (var j = k; j < n; j++) {
+                A[i][j][0] -= factor * A[k][j][0]; // Modificação aqui
+              }
+              b[i][0] -= factor * b[k][0];
+            }
+          }
+
+          // Resolução do sistema triangular superior
+          x = new Array(n);
+          for (var i = n - 1; i >= 0; i--) {
+            var sum = 0;
+            for (var j = i + 1; j < n; j++) {
+              sum += A[i][j][0] * x[j];
+            }
+            x[i] = (b[i][0] - sum) / A[i][i][0]; // Modificação aqui
+          }
+
+          return {
+            A: A,
+            b: b,
+            x: x
+          };
+        }
+
+        var result = eliminacaoGauss(matrix);
+
+        // Exibir o resultado na página
+        var resultDiv = $('#resultDiv');
+        resultDiv.empty();
+
+        // Exibir a matriz resultante
+        var matrixTable = $('<table>');
+        for (var i = 0; i < result.A.length; i++) {
+          var row = $('<tr>');
+          for (var j = 0; j < result.A[i].length; j++) {
+            var cell = $('<td>').text(result.A[i][j][0]);
+            row.append(cell);
+          }
+          row.append($('<td>').text(result.b[i][0]));
+          matrixTable.append(row);
+        }
+        resultDiv.append(matrixTable);
+
+        // Exibir os valores de cada variável x
+        for (var i = 0; i < result.x.length; i++) {
+          var p = $('<p>').text('x[' + i + ']: ' + result.x[i]);
+          resultDiv.append(p);
+        }
+      });
+
+      $('#gaussSeidelButton').click(function() {
+        var matrix = [];
+        $('#matrixContainer input').each(function() {
+          matrix.push(parseFloat($(this).val()));
+        });
+
+        // Função de Gauss-Seidel
+        function gaussSeidel(matrix) {
+          var n = Math.floor(Math.sqrt(matrix.length));
+          var A = [];
+          var b = [];
+          var x = [];
+
+          // Construir a matriz A e o vetor b
+          for (var i = 0; i < n; i++) {
+            var row = [];
+            for (var j = 0; j < n; j++) {
+              row.push(matrix[i * n + j]); // Modificação aqui
+            }
+            A.push(row);
+            b.push(matrix[n * n + i]);
+          }
+
+          // Inicializar o vetor x com zeros
+          x = new Array(n).fill(0);
+
+          // Iterações de Gauss-Seidel
+          var maxIterations = 100; // Definir o número máximo de iterações
+          var tolerance = 0.0001; // Definir a tolerância para a convergência
+
+          for (var k = 0; k < maxIterations; k++) {
+            var norm = 0;
+            for (var i = 0; i < n; i++) {
+              var sum = 0;
+              for (var j = 0; j < n; j++) {
+                if (j !== i) {
+                  sum += A[i][j] * x[j];
+                }
+              }
+              var newX = (b[i] - sum) / A[i][i];
+              norm += Math.abs(newX - x[i]);
+              x[i] = newX;
+            }
+            if (norm < tolerance) {
+              break; // Convergiu para uma solução aceitável
+            }
+          }
+
+          return {
+            A: A,
+            b: b,
+            x: x
+          };
+        }
+
+        var result = gaussSeidel(matrix);
+
+        // Exibir o resultado na página
+        var resultDiv = $('#resultDiv');
+        resultDiv.empty();
+
+        // Exibir a matriz resultante
+        var matrixTable = $('<table>');
+        for (var i = 0; i < result.A.length; i++) {
+          var row = $('<tr>');
+          for (var j = 0; j < result.A[i].length; j++) {
+            var cell = $('<td>').text(result.A[i][j]);
+            row.append(cell);
+          }
+          row.append($('<td>').text(result.b[i]));
+          matrixTable.append(row);
+        }
+        resultDiv.append(matrixTable);
+
+        // Exibir os valores de cada variável x
+        for (var i = 0; i < result.x.length; i++) {
+          var p = $('<p>').text('x[' + i + ']: ' + result.x[i]);
+          resultDiv.append(p);
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Inserir Matriz e Calcular</h1>
+  <form id="matrixForm">
+    <label for="rows">Linhas:</label>
+    <input type="number" id="rows" min="1" required>
+    <br>
+    <label for="cols">Colunas:</label>
+    <input type="number" id="cols" min="1" required>
+    <br>
+    <input type="submit" value="Criar Matriz">
+  </form>
+  
+  <br>
+  
+  <table id="matrixContainer">
+    <!-- A matriz será adicionada aqui -->
+  </table>
+  
+  <br>
+  
+  <button id="gaussButton">Calcular Eliminação de Gauss</button>
+  <button id="gaussSeidelButton">Calcular Gauss-Seidel</button>
+  
+  <div id="resultDiv"></div>
+</body>
+</html>

@@ -42,7 +42,7 @@
           for (var i = 0; i < n; i++) {
             var row = [];
             for (var j = 0; j < n; j++) {
-              row.push([matrix[i * n + j]]); // Modificação aqui
+              row.push([matrix[i * n + j]]); 
             }
             A.push(row);
             b.push([matrix[n * n + i]]);
@@ -51,9 +51,9 @@
           // Eliminação de Gauss
           for (var k = 0; k < n - 1; k++) {
             for (var i = k + 1; i < n; i++) {
-              var factor = A[i][k][0] / A[k][k][0]; // Modificação aqui
+              var factor = A[i][k][0] / A[k][k][0]; 
               for (var j = k; j < n; j++) {
-                A[i][j][0] -= factor * A[k][j][0]; // Modificação aqui
+                A[i][j][0] -= factor * A[k][j][0]; 
               }
               b[i][0] -= factor * b[k][0];
             }
@@ -66,7 +66,7 @@
             for (var j = i + 1; j < n; j++) {
               sum += A[i][j][0] * x[j];
             }
-            x[i] = (b[i][0] - sum) / A[i][i][0]; // Modificação aqui
+            x[i] = (b[i][0] - sum) / A[i][i][0];
           }
 
           return {
@@ -200,7 +200,7 @@
   <br>
   
   <table id="matrixContainer">
-    <!-- A matriz será adicionada aqui -->
+   
   </table>
   
   <br>

@@ -61,12 +61,12 @@ button {
   
   form label {
     margin-bottom: 5px;
-    font-family: Arial, sans-serif; /* Fonte padrão para labels */
+    font-family: Arial, sans-serif; 
   }
   
   form input {
     margin-bottom: 10px;
-    font-family: Arial, sans-serif; /* Fonte padrão para inputs */
+    font-family: Arial, sans-serif; 
   }
   
   /* Estilo para a tabela de matriz */
@@ -102,6 +102,6 @@ button {
   
   /* Estilo para os títulos */
   h1 {
-    font-family: Arial, sans-serif; /* Fonte padrão para títulos */
+    font-family: Arial, sans-serif; 
   }
   
